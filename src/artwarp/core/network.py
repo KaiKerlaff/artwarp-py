@@ -250,7 +250,11 @@ class ARTwarp:
 
         for iteration in range(1, self.max_iterations + 1):
             # shuffle sample order
-            sample_order = np.random.permutation(num_samples)
+            # sample_order = np.random.permutation(num_samples)
+
+            # temporarily disable shuffling for deterministic order (for testing)
+            sample_order = np.arange(num_samples)
+
             num_reclassifications = 0
 
             for sample_idx in sample_order:
