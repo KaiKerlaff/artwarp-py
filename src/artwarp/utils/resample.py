@@ -73,9 +73,14 @@ def resample_contours(
             )
         # MATLAB: 1:(sampleInterval/tempres):length(contour) => new indices
         step = sample_interval_sec / tr
-        new_length = max(1, int(round(1 + (n - 1) / step)))
+
+        # round new length to 9dps to avoid floating point issues with np.floor, then floor to exactly mirror the length
+        # calculated in MATLAB as length(1:step:n) - note MATLAB's colon operator includes a tolerance for floating
+        # point errors as included manually here.
+        new_length = max(1, int(np.floor(np.round((1 + (n - 1) / step), 9))))
         old_x = np.arange(n, dtype=np.float64)
-        new_x = np.linspace(0, n - 1, new_length)
+        # Mirror MATLAB's colon operator behaviour to obtain the new query points for interpolation.
+        new_x = np.linspace(0, step*np.floor(np.round((n-1)/step, 9)), new_length)
         resampled = np.interp(new_x, old_x, c)
         result.append(resampled.astype(np.float64))
     return result
