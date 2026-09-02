@@ -25,5 +25,11 @@ def run_ARTwarp_py(input_folder, warpFactorLevel, vigilance, maxCats, maxIts, sa
     subprocess.run(cmd)
 
 
-def run_both_and_compare(warpFactorLevel, vigilance, maxCats, maxIts, sampleInterval, randomiseSortOrder, matlab_output_folder, python_output_folder):
-    pass
+def run_both_and_compare(input_folder,warpFactorLevel, vigilance, maxCats, maxIts, sampleInterval, randomiseSortOrder, output_folder):
+    run_ARTwarp_MATLAB(input_folder, warpFactorLevel, vigilance, maxCats, maxIts, sampleInterval, randomiseSortOrder, output_folder)
+    run_ARTwarp_py(input_folder, warpFactorLevel, vigilance, maxCats, maxIts, sampleInterval, output_folder)
+    cmd = ["python",
+            "scripts/compare_categorizations.py",
+            f"{output_folder}/MATLAB_category_assignments.csv",
+            f"{output_folder}/category_assignments.csv"]
+    subprocess.run(cmd)
